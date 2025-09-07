@@ -13,30 +13,31 @@ import java.util.List;
 class DrawingPanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
-    private static final int DEFAULT_SIZE = 60;
     private final List<Shape> shapes = new ArrayList<>();
     private Point startDrag = null;
+    private static final int FIGURE_SIZE = 50; // Tamanho padrão da figura
 
-    DrawingPanel() {
-        
+    public DrawingPanel() {
         setBackground(Color.WHITE);
-        setOpaque(true);
-        setDoubleBuffered(true);
 
-        var mouse = new MouseAdapter() {
-            @Override public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 1 && startDrag == null) {
-                    int size = Math.max(Math.min(DEFAULT_SIZE, DEFAULT_SIZE), 10);
-                    Shape s =  new Ellipse2D.Double(e.getPoint().x, e.getPoint().y, size, size);
-                    //return new Rectangle2D.Double(e.getPoint().x, e.getPoint().y, Math.max(DEFAULT_SIZE, 10), Math.max(DEFAULT_SIZE, 10));
-                    shapes.add(s);
-                    repaint();
-                }
+        MouseAdapter mouseListener = new MouseAdapter() {
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                Point clickPoint = e.getPoint();
+
+                double x = clickPoint.x - FIGURE_SIZE / 2.0;
+                double y = clickPoint.y - FIGURE_SIZE / 2.0;
+
+                Shape newFigure = new Rectangle2D.Double(x, y, FIGURE_SIZE, FIGURE_SIZE);
+
+                shapes.add(newFigure);
+
+                repaint();
             }
         };
-        addMouseListener(mouse);        
-        addMouseMotionListener(mouse);
 
+        addMouseListener(mouseListener);
     }
 
     void clear() {
